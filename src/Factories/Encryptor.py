@@ -1,6 +1,3 @@
-
-
-
 class Encryptor:
     def __init__(self, key):
         if isinstance(key, int):
@@ -9,21 +6,22 @@ class Encryptor:
             raise TypeError("Key should be an integer.")
 
     def feistel_function(self, right, key):
-        return right ^ key  
+        return right ^ key
 
     def encrypt(self, plaintext):
-        left, right = self.split_into_halves(plaintext)
+        # Metni 8 byte'lık bloklara bölüyoruz ve eksik kalan kısmı padding ile tamamlıyoruz
+        blocks = [plaintext[i:i+8].ljust(8, '\x00') for i in range(0, len(plaintext), 8)]
+        encrypted_blocks = [self.encrypt_block(block) for block in blocks]
+        return ''.join(encrypted_blocks)
 
-        for round in range(16):  
+    def encrypt_block(self, block):
+        left, right = self.split_into_halves(block)
+        for round in range(16):
             round_key = self.generate_round_key(round)
             right_new = self.feistel_function(right, round_key)
-            
             new_left = left ^ right_new
-            
-            left = right
-            right = new_left
-
-        return self.combine_halves(left, right)
+            left, right = right, new_left
+        return self.combine_halves(left, right).hex()  # Hex format
 
     def split_into_halves(self, data):
         data = int.from_bytes(data.encode(), 'big')
@@ -33,10 +31,8 @@ class Encryptor:
 
     def combine_halves(self, left, right):
         combined = (left << 32) | right
-        return combined.to_bytes(8, 'big').hex()
+        return combined.to_bytes(8, 'big')
 
     def generate_round_key(self, round):
-        
         shifted_key = (self.key >> round) & 0xFFFFFFFF
         return shifted_key
-    

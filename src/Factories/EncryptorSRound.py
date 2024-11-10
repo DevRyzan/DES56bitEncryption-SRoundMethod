@@ -14,15 +14,20 @@ class EncryptorSRound:
         s_box_output = ((right ^ round_key) << 1) & 0xFFFFFFFF
         return s_box_output
 
-    def encrypt(self, plaintext):
-        left, right = self.split_into_halves(plaintext)
+    def encrypt_sRound(self, plaintext):
+        # Metni 8 byte'lık bloklara bölüyoruz ve eksik kalan kısmı padding ile tamamlıyoruz
+        blocks = [plaintext[i:i+8].ljust(8, '\x00') for i in range(0, len(plaintext), 8)]
+        encrypted_blocks = [self.encrypt_block(block) for block in blocks]
+        return ''.join(encrypted_blocks)
 
-        for round in range(16):  
+    def encrypt_block(self, block):
+        left, right = self.split_into_halves(block)
+
+        for round in range(16):
             round_key = self.generate_round_key(round)
             right_new = self.feistel_function(right, round_key)
             
             new_left = left ^ right_new
-            
             left = right
             right = new_left
 
