@@ -15,7 +15,6 @@ class EncryptorSRound:
         return s_box_output
 
     def encrypt_sRound(self, plaintext):
-        # Metni 8 byte'lık bloklara bölüyoruz ve eksik kalan kısmı padding ile tamamlıyoruz
         blocks = [plaintext[i:i+8].ljust(8, '\x00') for i in range(0, len(plaintext), 8)]
         encrypted_blocks = [self.encrypt_block(block) for block in blocks]
         return ''.join(encrypted_blocks)

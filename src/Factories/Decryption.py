@@ -9,10 +9,9 @@ class Decryptor:
         return right ^ key
 
     def decrypt(self, ciphertext):
-        # Şifreli metni 16 karakterlik bloklara ayırıyoruz
         blocks = [ciphertext[i:i+16] for i in range(0, len(ciphertext), 16)]
         decrypted_blocks = [self.decrypt_block(block) for block in blocks]
-        return ''.join(decrypted_blocks).rstrip('\x00')  # Remove padding
+        return ''.join(decrypted_blocks).rstrip('\x00')  
 
     def decrypt_block(self, hex_block):
         left, right = self.split_into_halves_from_hex(hex_block)

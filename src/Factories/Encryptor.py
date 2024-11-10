@@ -9,7 +9,6 @@ class Encryptor:
         return right ^ key
 
     def encrypt(self, plaintext):
-        # Metni 8 byte'lık bloklara bölüyoruz ve eksik kalan kısmı padding ile tamamlıyoruz
         blocks = [plaintext[i:i+8].ljust(8, '\x00') for i in range(0, len(plaintext), 8)]
         encrypted_blocks = [self.encrypt_block(block) for block in blocks]
         return ''.join(encrypted_blocks)
@@ -21,7 +20,7 @@ class Encryptor:
             right_new = self.feistel_function(right, round_key)
             new_left = left ^ right_new
             left, right = right, new_left
-        return self.combine_halves(left, right).hex()  # Hex format
+        return self.combine_halves(left, right).hex()  
 
     def split_into_halves(self, data):
         data = int.from_bytes(data.encode(), 'big')
