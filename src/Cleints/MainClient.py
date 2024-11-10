@@ -23,7 +23,6 @@ def main():
         if not plaintext:
             print("Error: No text entered.")
             return
-
         print("Encrypting text...")
         encrypted_text = encryptor.encrypt(plaintext)
         encrypted_text2 = encryptor2.encrypt_sRound(plaintext)
@@ -51,9 +50,7 @@ def main():
             f.write(f"-{decrypted_text}\n")
             
         print("Plain text and Encrypted text saved successfully.")
-
     except Exception as e:
         print(f"An error occurred: {e}")
-
 if __name__ == "__main__":
     main()

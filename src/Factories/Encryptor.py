@@ -40,8 +40,6 @@ class Encryptor:
             raise IndexError(f"Calculated row {row} or column {column} out of range for S_BOX entry")
 
         return self.S_BOX[sbox_index][column]
-
-
     def permute(self, data):
         permuted = 0
         for i, pos in enumerate(self.PERMUTATION_TABLE):
