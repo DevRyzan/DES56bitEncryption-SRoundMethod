@@ -25,10 +25,16 @@ class Decryptor:
                 expanded |= (1 << i)
         return expanded
 
+    
     def apply_s_box(self, data):
-        row = ((data & 0x20) >> 4) | (data & 0x1)  # 2-bit row
-        column = (data >> 1) & 0xF  # 4-bit column
-        return self.S_BOX[0][row * 16 + column]
+        column = (data >> 1) & 0xF  # 4-bit column (0-15 arası)
+    
+        print(f"Debug: column={column}, data={data}")
+        if column < 0 or column >= len(self.S_BOX[0]):
+            raise IndexError(f"Calculated column {column} out of range for S_BOX entry")
+
+        return self.S_BOX[0][column]
+    
 
     def permute(self, data):
         permuted = 0

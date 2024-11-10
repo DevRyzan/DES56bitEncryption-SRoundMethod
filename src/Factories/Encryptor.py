@@ -24,20 +24,24 @@ class Encryptor:
             if half_block & (1 << pos):
                 expanded |= (1 << i)
         return expanded
+    
+
 
     def apply_s_box(self, data, sbox_index):
-    
         if sbox_index >= len(self.S_BOX):
             raise IndexError(f"S-Box index {sbox_index} is out of range.")
-        
+    
         row = ((data & 0x20) >> 4) | (data & 0x1)  # 2-bit row
         column = (data >> 1) & 0xF  # 4-bit column
-    
-        if row < 0 or row >= 4 or column < 0 or column >= 16:
+
+        print(f"Debug: sbox_index={sbox_index}, row={row}, column={column}, data={data}")
+
+        if row < 0 or row >= len(self.S_BOX) or column < 0 or column >= len(self.S_BOX[0]):
             raise IndexError(f"Calculated row {row} or column {column} out of range for S_BOX entry")
-    
-        return self.S_BOX[sbox_index][(row << 4) | column]
-    
+
+        return self.S_BOX[sbox_index][column]
+
+
     def permute(self, data):
         permuted = 0
         for i, pos in enumerate(self.PERMUTATION_TABLE):
